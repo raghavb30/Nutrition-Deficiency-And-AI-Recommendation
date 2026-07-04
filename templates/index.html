@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrition AI System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Container */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 45px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+    z-index: 1;
+    animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 42px;
+    margin-bottom: 8px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    animation: fadeInScale 0.8s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.subtitle {
+    text-align: center;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 30px;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Image */
+.top-img {
+    display: block;
+    margin: 0 auto 30px;
+    width: 140px;
+    height: 140px;
+    filter: drop-shadow(0 12px 24px rgba(34, 197, 94, 0.3));
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: popIn 0.8s ease-out 0.2s both;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5) rotate(-20deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.top-img:hover {
+    transform: scale(1.15) rotate(8deg);
+    filter: drop-shadow(0 16px 32px rgba(34, 197, 94, 0.4));
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+/* Inputs */
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    color: #1f2937;
+    font-size: 13px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+input, select {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    outline: none;
+    background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+input:focus, select:focus {
+    border-color: #22c55e;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transform: translateY(-3px);
+}
+
+input::placeholder {
+    color: #999;
+}
+
+/* Button */
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 800;
+    color: white;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 12px 36px rgba(34, 197, 94, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: left 0.5s ease;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 50px rgba(34, 197, 94, 0.45);
+}
+
+button:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+}
+
+/* Result Card */
+.card {
+    margin-top: 40px;
+    padding: 35px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(240, 253, 250, 0.9) 0%, rgba(207, 250, 235, 0.5) 100%);
+    animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 20px 50px rgba(16, 185, 129, 0.15);
+    border: 2px solid rgba(16, 185, 129, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card h3 {
+    color: #22c55e;
+    margin-bottom: 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -0.5px;
+}
+
+.card h3::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 2px;
+}
+
+/* Highlight */
+.highlight {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(22, 163, 74, 0.08));
+    padding: 18px;
+    border-radius: 14px;
+    font-weight: 700;
+    margin-bottom: 22px;
+    color: #1f2937;
+    border-left: 5px solid #22c55e;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.1);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Lists */
+ul {
+    padding-left: 0;
+    margin-bottom: 22px;
+    list-style: none;
+}
+
+li {
+    margin-bottom: 14px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-left: 4px solid transparent;
+    color: #374151;
+    font-weight: 500;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+li:hover {
+    transform: translateX(8px);
+    background: rgba(255, 255, 255, 1);
+    border-left-color: #22c55e;
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
+}
+
+li strong {
+    color: #22c55e;
+    font-weight: 700;
+}
+
+/* Error */
+.error {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: white;
+    text-align: center;
+    font-weight: 700;
+    box-shadow: 0 10px 28px rgba(255, 107, 107, 0.35);
+    border-left: 4px solid #ff4757;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        padding: 25px;
+    }
+    
+    h1 {
+        font-size: 32px;
+    }
+    
+    .card {
+        padding: 22px;
+    }
+    
+    button {
+        font-size: 14px;
+        padding: 14px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- ✅ GREEN VEGETABLES - BROCCOLI & LEAFY GREENS ICON -->
+<img src="https://cdn-icons-png.flaticon.com/512/3050/3050159.png" class="top-img">
+
+<h1>🧠 Nutrition AI System</h1>
+<p class="subtitle">AI-Based Personalized Diet & Health Analysis</p>
+
+<form method="post" action="/">
+
+<div class="grid">
+
+<div class="input-group">
+<label>Age</label>
+<input type="number" name="age" required value="{{ form_data.age }}">
+</div>
+
+<div class="input-group">
+<label>Gender</label>
+<select name="gender">
+<option value="female" {% if form_data.gender == "female" %}selected{% endif %}>Female</option>
+<option value="male" {% if form_data.gender == "male" %}selected{% endif %}>Male</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>BMI</label>
+<input type="number" step="0.1" name="bmi" required value="{{ form_data.bmi }}">
+</div>
+
+<div class="input-group">
+<label>Activity Level</label>
+<select name="activity_level">
+<option value="low" {% if form_data.activity_level == "low" %}selected{% endif %}>Low</option>
+<option value="moderate" {% if form_data.activity_level == "moderate" %}selected{% endif %}>Moderate</option>
+<option value="high" {% if form_data.activity_level == "high" %}selected{% endif %}>High</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Hemoglobin</label>
+<input type="number" step="0.1" name="hemoglobin" required value="{{ form_data.hemoglobin }}">
+</div>
+
+<div class="input-group">
+<label>Vitamin D</label>
+<input type="number" step="0.1" name="vitamin_d" required value="{{ form_data.vitamin_d }}">
+</div>
+
+<div class="input-group">
+<label>Vitamin B12</label>
+<input type="number" name="vitamin_b12" required value="{{ form_data.vitamin_b12 }}">
+</div>
+
+<div class="input-group">
+<label>Protein Intake</label>
+<input type="number" step="0.1" name="protein_intake" required value="{{ form_data.protein_intake }}">
+</div>
+
+<div class="input-group">
+<label>Water Intake</label>
+<input type="number" step="0.1" name="water_intake" required value="{{ form_data.water_intake }}">
+</div>
+
+</div>
+
+<button type="submit">🔍 Analyze & Recommend</button>
+
+</form>
+
+{% if result %}
+<div class="card">
+
+<h3>💡 Recommended Plan</h3>
+<p class="highlight">{{ result.ml_recommended_plan }}</p>
+
+<h3>⚠️ Deficiency Risks</h3>
+<ul>
+{% for d in result.deficiency_risks %}
+<li>🔴 {{ d }}</li>
+{% else %}
+<li>No deficiency risks detected.</li>
+{% endfor %}
+</ul>
+
+<h3>📊 Analysis Reasons</h3>
+<ul>
+{% for key, val in result.rule_reasons.items() %}
+<li><strong>{{ key }}:</strong> {{ val }}</li>
+{% else %}
+<li>All submitted values are within the current rule thresholds.</li>
+{% endfor %}
+</ul>
+
+<h3>🥗 Diet Advice</h3>
+<ul>
+{% for tip in result.rule_based_advice %}
+<li>✅ {{ tip }}</li>
+{% endfor %}
+</ul>
+
+</div>
+{% endif %}
+
+</div>
+
+</body>
+</html>
